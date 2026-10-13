@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1565c0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .add-btn {
+            background-color: #1565c0;
+        }
+
+        .delete-btn {
+            background-color: #e53935;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #1565c0;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Student Management System</h1>
+
+        <h3>Add Student Details</h3>
+
+        <form id="studentForm">
+            <label>Student ID:</label>
+            <input type="text" id="studentId"
+                   placeholder="Enter student ID" required>
+
+            <label>Student Name:</label>
+            <input type="text" id="studentName"
+                   placeholder="Enter student name" required>
+
+            <label>Course:</label>
+            <input type="text" id="course"
+                   placeholder="Enter course" required>
+
+            <label>Marks:</label>
+            <input type="number" id="marks"
+                   placeholder="Enter marks (0-100)"
+                   min="0" max="100" required>
+
+            <button type="submit" class="add-btn">
+                Add Student
+            </button>
+        </form>
+
+        <h3>Student Details</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Student Name</th>
+                    <th>Course</th>
+                    <th>Marks</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="studentTable">
+            </tbody>
+        </table>
+
+    </div>
+
+    <script>
+        const studentForm = document.getElementById("studentForm");
+        const studentTable = document.getElementById("studentTable");
+
+        let students = [];
+
+        
+        studentForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const id = document.getElementById("studentId").value.trim();
+            const name = document.getElementById("studentName").value.trim();
+            const course = document.getElementById("course").value.trim();
+            const marks = Number(document.getElementById("marks").value);
+
+            
+            if (students.some(student => student.id === id)) {
+                alert("Student ID already exists!");
+                return;
+            }
+
+            const student = {
+                id: id,
+                name: name,
+                course: course,
+                marks: marks
+            };
+
+            students.push(student);
+
+            displayStudents();
+
+            studentForm.reset();
+        });
+
+      
+        function displayStudents() {
+            studentTable.innerHTML = "";
+
+            students.forEach(function(student, index) {
+                const row = document.createElement("tr");
+
+                [student.id, student.name, student.course, student.marks]
+                    .forEach(function(value) {
+                        const cell = document.createElement("td");
+                        cell.textContent = value;
+                        row.appendChild(cell);
+                    });
+
+                const actionCell = document.createElement("td");
+                const deleteButton = document.createElement("button");
+
+                deleteButton.textContent = "Delete";
+                deleteButton.className = "delete-btn";
+
+                deleteButton.addEventListener("click", function() {
+                    deleteStudent(index);
+                });
+
+                actionCell.appendChild(deleteButton);
+                row.appendChild(actionCell);
+
+                studentTable.appendChild(row);
+            });
+        }
+
+        
+        function deleteStudent(index) {
+            students.splice(index, 1);
+            displayStudents();
+        }
+    </script>
+
+</body>
+</html>
